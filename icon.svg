@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0b0f19"/>
+  <rect x="56" y="56" width="400" height="400" rx="64" fill="#151c2c"/>
+  <circle cx="256" cy="226" r="118" fill="none" stroke="#10b981" stroke-width="22"/>
+  <rect x="240" y="84" width="32" height="34" rx="10" fill="#10b981"/>
+  <line x1="256" y1="226" x2="256" y2="138" stroke="#f8fafc" stroke-width="20" stroke-linecap="round"/>
+  <line x1="256" y1="226" x2="318" y2="268" stroke="#f8fafc" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="256" cy="226" r="16" fill="#f8fafc"/>
+  <text x="256" y="412" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#f8fafc" text-anchor="middle">PT</text>
+</svg>
