@@ -692,6 +692,9 @@
           <button type="button" class="chip-btn" id="settings-toggle-btn" aria-expanded="false">
             ⚙️ Adjust Timers &amp; Cycles
           </button>
+          <button type="button" class="chip-btn" id="installBtn" style="display:none" aria-label="Install app" title="Install app">
+            ⬇️ Install
+          </button>
         </div>
       </div>
       <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar-aria">
@@ -2026,5 +2029,45 @@
     renderHistory();
     updateUI();
   </script>
-</body>
+  <script>
+  /* Install button — same pattern as Jaanu: the browser only offers the
+     install prompt when it decides the app is installable
+     (beforeinstallprompt). If the prompt never fires, the button still
+     appears and shows the manual install steps instead. Hidden when the
+     app already runs installed (standalone). */
+  (function () {
+    var btn = document.getElementById('installBtn');
+    if (!btn) return;
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) return;
+    var deferred = null;
+    function show() { btn.style.display = ''; }
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferred = e;
+      show();
+    });
+    setTimeout(show, 3000);
+    btn.addEventListener('click', function () {
+      if (deferred) {
+        deferred.prompt();
+        if (deferred.userChoice) {
+          deferred.userChoice.then(function () { btn.style.display = 'none'; }).catch(function () {});
+        }
+        deferred = null;
+        return;
+      }
+      var iOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var msg = iOS
+        ? 'iPhone: tap Share (the square with the arrow) → "Add to Home Screen".'
+        : 'Android: tap the ⋮ menu → "Install app" (or "Add to Home screen"). If Chrome says the app is already installed, open it from your home-screen icon — it is already the new version.';
+      var sheet = document.createElement('div');
+      sheet.style.cssText = 'position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;';
+      sheet.innerHTML = '<div style="background:#111827;width:100%;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));font-size:15px;line-height:1.5;color:#e5e7eb"><b>Install PT Timer on your home screen 📲</b><br><br>' + msg + '<br><br><button id="installClose" style="width:100%;border:0;background:#3b82f6;color:#fff;font-weight:800;font-size:15px;border-radius:999px;padding:12px;cursor:pointer">Got it</button></div>';
+      sheet.addEventListener('click', function (e) { if (e.target === sheet || e.target.id === 'installClose') sheet.remove(); });
+      document.body.appendChild(sheet);
+    });
+  })();
+  </script>
+  </body>
 </html>
